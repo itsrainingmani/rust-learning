@@ -123,6 +123,69 @@ fn main() {
     for element in (1..5).rev() {
         println!("{}", element);
     }
+
+    // Extra Credit assignments
+    // 1. Convert Temp between fahrenheit and celsius
+    println!("0 deg Celsius is {} deg Fahrenheit:", convert_to_fahrenheit(0.0));
+    println!("212 deg Fahrenheit is {} Celsius:", convert_to_celsius(212.0));
+
+    // 2. Generate nth Fibonacci number
+    println!("The 16th fibonacci number is: {}", fibonacci(16));
+
+    // 3. The Twelve Days of Christmas
+    let days = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelve"];
+    let carol = [
+        "partridge in a pear tree",
+        "Two turtle doves",
+        "Three French hens",
+        "Four calling birds",
+        "Five gold rings",
+        "Six geese a laying",
+        "Seven swans a swimming",
+        "Eight maids a milking",
+        "Nine drummers drumming",
+        "Ten pipers piping",
+        "Eleven ladies dancing",
+        "Twelve Lords a leaping"
+    ];
+
+    for (i, day) in days.iter().enumerate() {
+        println!("On the {} day of Christmas, my true love sent to me", day);
+        for num in (0..i+1).rev() {
+            if i + 1 > 1 && num == 0 {
+                print!("And a ");
+            } else if i == 0 {
+                print!("A ");
+            }
+            println!("{}", carol[num]);
+        }
+        println!("");
+    }
+}
+
+fn fibonacci(n: u32) -> u32 {
+    let mut f1;
+    let mut f2 = 0;
+    let mut f_n = 1;
+    match n <= 1 {
+        true => n,
+        false => {
+            for _ in 1..n {
+                f1 = f2;
+                f2 = f_n;
+                f_n = f1 + f2;
+            }
+            f_n
+        }
+    }
+}
+
+fn convert_to_fahrenheit(temp: f32) -> f32 {
+    (temp * 9.0/5.0) + 32.0
+}
+
+fn convert_to_celsius(temp: f32) -> f32 {
+    (temp - 32.0) * 5.0 / 9.0
 }
 
 // Returns a value of type i32
