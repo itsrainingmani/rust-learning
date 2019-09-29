@@ -20,14 +20,6 @@ mod front_of_house {
     }
 }
 
-// pub fn eat_at_restaurant() {
-//     // Absolute path
-//     crate::front_of_house::hosting::add_to_waitlist();
-
-//     // Relative path
-//     front_of_house::hosting::add_to_waitlist();
-// }
-
 fn serve_order() {}
 
 mod back_of_house {
@@ -56,15 +48,26 @@ mod back_of_house {
     }
 }
 
+use crate::front_of_house::hosting;
+use self::back_of_house::{Appetizer, Breakfast};
+
 pub fn eat_at_restaurant() {
     // Order a breakfast in the summer with Rye Toast
-    let mut meal = back_of_house::Breakfast::summer("Rye");
+    let mut meal = Breakfast::summer("Rye");
 
     // Change mind about what bread we're going to get
     meal.toast = String::from("wheat");
     println!("I'd like {} toast please", meal.toast);
     // meal.seasonal_fruit = String::from("blueberries");
 
-    let order1 = back_of_house::Appetizer::Soup;
-    let order2 = back_of_house::Appetizer::Salad;
+    let order1 = Appetizer::Soup;
+    let order2 = Appetizer::Salad;
+
+    hosting::add_to_waitlist();
 }
+
+// use std::fmt::Result;
+// use std::io::Result as IoResult;
+
+// fn function1() -> Result {}
+// fn function2() -> IoResult<()> {}
