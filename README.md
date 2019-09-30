@@ -9,3 +9,5 @@ Learning Rust from [The Rust Programming Language](https://doc.rust-lang.org/boo
 - [x] Ch5. Using Structs to Structure Related Data
 - [x] Ch6. Enums and Pattern Matching
 - [x] Ch7. Managing Growing Projects with Packages, Crates, and Modules
+- [x] Ch8. Common Collections
+- [x] Ch9. Error Handling
