@@ -170,4 +170,52 @@ fn main() {
     }
 
     println!("{:?}", map);
+
+    // Extra Credit
+    let test_list = vec![1, 2, 3, 4, 5];
+    println!("{:#?}", get_stats(&test_list));
+
+    println!("{}", pig_latinize(&String::from("first apple")));
+}
+
+fn pig_latinize(words: &String) -> String {
+    let mut pig = Vec::new();
+    for word in words.split_whitespace() {
+        match word.chars().nth(0) {
+            Some(s) => {
+                if ['a', 'e', 'i', 'o', 'u'].contains(&s) {
+                    pig.push(format!("{}-hay", word));
+                } else {
+                    pig.push(format!("{}-{}ay", &word[1..], &s));
+                }
+            }
+            None => break,
+        }
+    }
+    pig.join(" ")
+}
+
+fn get_stats(list: &Vec<i32>) -> (f64, i32, i32) {
+    let mut sum = 0;
+    let mut counts = HashMap::new();
+    let mut new_list: Vec<i32> = Vec::new();
+    for i in list {
+        new_list.push(*i);
+        sum += *i;
+        let count = counts.entry(*i).or_insert(0);
+        *count += 1;
+    }
+    let mean: f64 = sum as f64 / list.len() as f64;
+    let mut max_count = -1;
+    let mut mode = -1;
+    for (key, value) in counts.iter() {
+        if *value > max_count {
+            max_count = *value;
+            mode = *key;
+        }
+    }
+    new_list.sort();
+    let len_new_list = new_list.len();
+    let median = &new_list[len_new_list / 2];
+    (mean, *median, mode)
 }
