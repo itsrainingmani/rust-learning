@@ -71,4 +71,35 @@ fn main() {
     s.push_str(data);
 
     println!("{}", s);
+
+    let mut s = String::from("lo");
+    s.push('l'); // Add a char to a string using push
+
+    println!("{}", s);
+
+    let s1 = String::from("Hello, ");
+    let s2 = String::from("world!");
+
+    // This statement takes ownership of s1, appends a copy of the contents of s2
+    // and then returns ownership of the result
+    // s1 won't be valid after the addition since ownership has passed to s3
+    let s3 = s1 + &s2;
+    // println!("{}, {}", s3, s1);
+
+    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = format!("{}-{}-{}", s1, s2, s3); // Doesn't take ownership of it's parameters
+    println!("{}", s);
+
+    let len = String::from("Здравствуйте").len();
+    println!("{}", len);
+
+    let hello = "Здравствуйте";
+    // let answer = &hello[0]; //Won't compile since it's easy to try to access an invalid or unexpected value
+
+    for c in "नमस्ते".chars() {
+        println!("{}", c);
+    }
 }
