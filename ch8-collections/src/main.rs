@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 fn main() {
     // Collections can contain multiple values
     // Unlike the built in array and tuple types,
@@ -99,7 +101,73 @@ fn main() {
     let hello = "Здравствуйте";
     // let answer = &hello[0]; //Won't compile since it's easy to try to access an invalid or unexpected value
 
+    // Iterating through a UTF-8 string's characters and printing them
     for c in "नमस्ते".chars() {
         println!("{}", c);
     }
+
+    // Creating an empty HashMap and inserting values into it
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+
+    let teams = vec![String::from("blue"), String::from("yellow")];
+    let initial_scores = vec![10, 50];
+
+    // Zipping together the iters of two vectors and constructing a HashMap from the zip
+    // Type annotation HashMap<_, _> is needed since collect can produce many different data structures
+    // and we need to specify one. Rust can infer the types of the key and values so we use underscores
+    let scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
+
+    println!("{:#?}", teams);
+
+    // For types that implement the Copy trait like i32, the values are copied into the hashmap
+    // For owned values like String, the values will be moved and the hashmap will be the owner
+    // of those values
+    let field_name = String::from("Favorite color");
+    let field_value = String::from("Blue");
+
+    let mut map = HashMap::new();
+    map.insert(field_name, field_value);
+
+    // println!("{:#?}, {:#?}", field_name, field_value);
+
+    let team_name = teams.get(0);
+    if let Some(s) = team_name {
+        print!("{}", s);
+        if let Some(i) = scores.get(&s) {
+            println!(": {}", i);
+        }
+    }
+
+    for (key, value) in &scores {
+        println!("{}: {}", *key, *value);
+    }
+
+    // Updating a HashMap
+
+    // Overwriting a value
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Blue"), 25);
+    println!("{:?}", scores); // {"Blue": 25} the og value of 10 is overwritten
+
+    // Only inserting a value if a key has no value
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);
+
+    scores.entry(String::from("Yellow")).or_insert(50);
+    scores.entry(String::from("Blue")).or_insert(50);
+    println!("{:?}", scores);
+
+    // Updating a value based on the old value
+    let text = "hello world wonderful world";
+    let mut map = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0);
+        *count += 1;
+    }
+
+    println!("{:?}", map);
 }
