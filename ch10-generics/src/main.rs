@@ -2,35 +2,6 @@ use mylib::Summary;
 use std::cmp::PartialOrd;
 use std::fmt::Display;
 
-// fn largest(list: &[i32]) -> i32 {
-//     let mut largest = list[0];
-
-//     for &item in list.iter() {
-//         if item > largest {
-//             largest = item;
-//         }
-//     }
-
-//     largest
-// }
-
-// Function is a generic over some type T.
-// It has one parameter names list, which is a slice of values of type T
-// It will return a value of the same type T
-
-// Here the function's parameter type T is trait-bound to only accept types
-// that implement the PartialOrd Trait allowing for > comparisons
-fn largest<T: PartialOrd>(list: &[T]) -> &T {
-    let mut largest = &list[0];
-
-    for item in list {
-        if item > largest {
-            largest = &item;
-        }
-    }
-    largest
-}
-
 struct Point<T> {
     x: T,
     y: T,
@@ -88,13 +59,17 @@ impl<T: Display + PartialOrd> Pair<T> {
     }
 }
 
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+
 fn main() {
     println!("Chapter 10 - Generic Types, Traits, and Lifetime");
 
     let number_list = vec![34, 50, 25, 100, 65];
     println!("The largest number is {}", largest(&number_list));
 
-    let mut char_list = vec!['y', 'm', 'a', 'q'];
+    let char_list = vec!['y', 'm', 'a', 'q'];
     let result = largest(&char_list);
     println!("The largest char is {}", result);
 
@@ -134,4 +109,70 @@ fn main() {
     mylib::notify_both(tweet, tumble);
 
     let _summarized = mylib::returns_summarizable();
+
+    // VALIDATING REFERENCES WITH LIFETIMES
+    let string1 = String::from("abcd");
+    let result;
+    // let string2 = "xyz";
+    // {
+    //     let string2 = String::from("xyz");
+    //     result = longest(string1.as_str(), string2.as_str());
+    // }
+
+    // println!("The longest string is {}", result);
+
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().expect("Could not find a '.'");
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+}
+
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+
+// fn largest(list: &[i32]) -> i32 {
+//     let mut largest = list[0];
+
+//     for &item in list.iter() {
+//         if item > largest {
+//             largest = item;
+//         }
+//     }
+
+//     largest
+// }
+
+// Function is a generic over some type T.
+// It has one parameter names list, which is a slice of values of type T
+// It will return a value of the same type T
+
+// Here the function's parameter type T is trait-bound to only accept types
+// that implement the PartialOrd Trait allowing for > comparisons
+fn largest<T: PartialOrd>(list: &[T]) -> &T {
+    let mut largest = &list[0];
+
+    for item in list {
+        if item > largest {
+            largest = &item;
+        }
+    }
+    largest
+}
+
+fn longest_with_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
+where
+    T: Display,
+{
+    println!("Announcement: {}", ann);
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
 }
