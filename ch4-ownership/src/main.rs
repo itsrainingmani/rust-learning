@@ -15,6 +15,20 @@ fn main() {
     //     let r2 = &mut s1;
     // }
 
+    // Stack-only data : Copy
+    let x = 5;
+    let y = x;
+    println!("x: {} & y: {}", x, y); // x is valid here since x is an i32 and it's value gets
+                                     // copied into y rather than moved there. i32 implements the Copy trait
+
+    // Heap allocated data: Clone
+    let s_test = String::from("Hell");
+    let s_test2 = s_test.clone(); // deep copies the heap data of the String, not just the stack data
+    println!("stest = {}, stest2 = {}", s_test, s_test2);
+
+    let s = String::from("ownership test"); // s comes into scope
+    takes_ownership(s); // s's value moves into the function and is no longer valid here
+
     // A reference's scope starts where it's introduced and continues till the last time it's used
     let r1 = &s1;
     let r2 = &s1;
@@ -40,6 +54,12 @@ fn main() {
     println!("The First word in '{}' is: '{}'", s, first_word(&s));
 }
 
+fn takes_ownership(some_string: String) {
+    // some_string comes into scope
+    println!("{}", some_string);
+} // Here, some_string goes out of scope, 'drop' is called,
+  // and the backing memory is freed
+
 fn first_word(s: &str) -> &str {
     let bytes = s.as_bytes();
 
@@ -52,7 +72,8 @@ fn first_word(s: &str) -> &str {
 }
 
 // Solution is to return the String directly rather than a ref to it
-fn dangle() -> String { // returns a reference to a String
+fn dangle() -> String {
+    // returns a reference to a String
     let s = String::from("hello"); // s is a new String
     s
     // &s // return a ref to the String s
