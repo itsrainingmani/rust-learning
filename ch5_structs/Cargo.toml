@@ -1,5 +1,5 @@
 [package]
-name = "ch5-structs"
+name = "ch5_structs"
 version = "0.1.0"
 authors = ["Manikandan Sundararajan <tsmanikandan@protonmail.com>"]
 edition = "2018"
