@@ -12,3 +12,4 @@ Learning Rust from [The Rust Programming Language](https://doc.rust-lang.org/boo
 - [x] Ch8.  Common Collections
 - [x] Ch9.  Error Handling
 - [x] Ch10. Generice Types, Traits & Lifetimes
+- [x] Ch11. Writing Automated Tests
