@@ -11,7 +11,7 @@ Learning Rust from [The Rust Programming Language](https://doc.rust-lang.org/boo
 - [x] Ch7.  Managing Growing Projects with Packages, Crates, and Modules
 - [x] Ch8.  Common Collections
 - [x] Ch9.  Error Handling
-- [x] Ch10. Generice Types, Traits & Lifetimes
+- [x] Ch10. Generic Types, Traits & Lifetimes
 - [x] Ch11. Writing Automated Tests
 - [x] Ch12. An I/O project: Building a Command Line Program
-- [x] Ch12. Functional Language Features: Iterators and Closures
+- [x] Ch13. Functional Language Features: Iterators and Closures
