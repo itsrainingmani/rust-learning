@@ -53,4 +53,20 @@ fn main() {
     assert_eq!(5, *y); // cannot be dereferenced since mybox doesn't implement
                        // the Deref trait
                        // The dereferencing works once we implement the trait
+
+    let m = MyBox::new(String::from("Rust"));
+    hello(&m);
+    // deref coercion in action
+    // Deref coercion converts a reference to a type that implements Deref
+    // into a reference to a type that Deref can convert the original type into
+    // Without deref coercion, hello(&m) would be written as -
+    // hello(&(*m)[..])
+    // When the Deref trait is defined for the types involved, Rust will analyze
+    // the types and use Deref::deref as many times as necessary to get a reference
+    // to match the parameter's type. The number of times is resolved at compile
+    // time, so there's no runtime penalty for using this.
+}
+
+fn hello(name: &str) {
+    println!("Hello, {}", name);
 }
