@@ -1,7 +1,13 @@
 use std::ops::Deref;
+use std::rc::Rc;
 
 enum List {
     Cons(i32, Box<List>),
+    Nil,
+}
+
+enum RcList {
+    Cons(i32, Rc<RcList>),
     Nil,
 }
 
@@ -33,6 +39,7 @@ impl Drop for CustomSmartPointer {
 }
 
 use crate::List::{Cons, Nil};
+use crate::RcList::{Cons as RcCons, Nil as RcNil};
 
 fn main() {
     println!("Chapter 15 - Smart Pointers");
@@ -92,6 +99,17 @@ fn main() {
         };
     } // <- d goes out of scope here so the drop function is called
       // variables are dropped in reverse order of creation (LIFO)
+
+    // Reference Counted Smart Pointer
+    let a = Rc::new(RcCons(5, Rc::new(RcCons(10, Rc::new(RcNil)))));
+    println!("Count after creating a = {}", Rc::strong_count(&a));
+    let b = RcCons(3, Rc::clone(&a));
+    println!("Count after creating b = {}", Rc::strong_count(&a));
+    {
+        let c = RcCons(4, Rc::clone(&a));
+        println!("Count after creating c = {}", Rc::strong_count(&a));
+    }
+    println!("Count after c goes out of scope = {}", Rc::strong_count(&a));
 }
 
 fn hello(name: &str) {
