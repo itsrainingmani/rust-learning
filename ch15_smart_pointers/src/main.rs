@@ -13,11 +13,22 @@ impl<T> MyBox<T> {
     }
 }
 
+// Implementing the Deref trait
 impl<T> Deref for MyBox<T> {
     type Target = T; // Defines an associated type for the Deref trait to use
 
     fn deref(&self) -> &T {
         &self.0
+    }
+}
+
+struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`", self.data);
     }
 }
 
@@ -65,6 +76,22 @@ fn main() {
     // the types and use Deref::deref as many times as necessary to get a reference
     // to match the parameter's type. The number of times is resolved at compile
     // time, so there's no runtime penalty for using this.
+
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let e = CustomSmartPointer {
+        data: String::from("My Stuff also"),
+    };
+    println!("CustomSmartPointers created");
+    drop(c);
+    println!("CustomSmartPointer c dropped before end of main");
+    {
+        let d = CustomSmartPointer {
+            data: String::from("other stuff"),
+        };
+    } // <- d goes out of scope here so the drop function is called
+      // variables are dropped in reverse order of creation (LIFO)
 }
 
 fn hello(name: &str) {
