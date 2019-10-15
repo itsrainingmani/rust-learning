@@ -101,6 +101,7 @@ fn main() {
       // variables are dropped in reverse order of creation (LIFO)
 
     // Reference Counted Smart Pointer
+    // Rc<T> enables multiple owners of the same data
     let a = Rc::new(RcCons(5, Rc::new(RcCons(10, Rc::new(RcNil)))));
     println!("Count after creating a = {}", Rc::strong_count(&a));
     let b = RcCons(3, Rc::clone(&a));
