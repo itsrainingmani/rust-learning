@@ -42,6 +42,11 @@ mod tests {
     use super::*;
     use std::cell::RefCell;
 
+    // RefCell allows for runtime checking of borrowing rules
+    // If there is an error during runtime, the code will panic
+    // RefCell<T> is useful when you're sure that your code follows
+    // the borrowing rules but the compiler is unable to understand
+    // and guarantee that
     struct MockMessenger {
         sent_messages: RefCell<Vec<String>>,
     }

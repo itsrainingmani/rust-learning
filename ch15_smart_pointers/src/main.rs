@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 
@@ -6,8 +7,15 @@ enum List {
     Nil,
 }
 
+// List that can have multiple owners using Rc
 enum RcList {
     Cons(i32, Rc<RcList>),
+    Nil,
+}
+
+#[derive(Debug)]
+enum RefList {
+    Cons(Rc<RefCell<i32>>, Rc<RefList>),
     Nil,
 }
 
@@ -40,6 +48,7 @@ impl Drop for CustomSmartPointer {
 
 use crate::List::{Cons, Nil};
 use crate::RcList::{Cons as RcCons, Nil as RcNil};
+use crate::RefList::{Cons as RefCons, Nil as RefNil};
 
 fn main() {
     println!("Chapter 15 - Smart Pointers");
@@ -111,6 +120,25 @@ fn main() {
         println!("Count after creating c = {}", Rc::strong_count(&a));
     }
     println!("Count after c goes out of scope = {}", Rc::strong_count(&a));
+
+    // Having multiple owners of Mutable data by combining Rc<T> & RefCell<T>
+    // Recall: Rc<T> lets you have multiple owners of some data but only gives
+    // you immutable access to that data.
+    // Having an Rc<T> that holds a RefCell<T>, you can get a value that has
+    // multiple owners and mutate the value
+
+    let value = Rc::new(RefCell::new(5));
+
+    let a = Rc::new(RefCons(Rc::clone(&value), Rc::new(RefNil)));
+
+    let b = RefCons(Rc::new(RefCell::new(6)), Rc::clone(&a));
+    let c = RefCons(Rc::new(RefCell::new(10)), Rc::clone(&a));
+
+    *value.borrow_mut() += 10;
+
+    println!("a after = {:?}", a);
+    println!("b after = {:?}", b);
+    println!("c after = {:?}", c);
 }
 
 fn hello(name: &str) {
