@@ -31,6 +31,8 @@ fn main() {
     // handle.join().unwrap();
 
     let (tx, rx) = mpsc::channel(); // mpsc - Multi producer, Single Consumer
+
+    let tx1 = mpsc::Sender::clone(&tx);
     thread::spawn(move || {
         let vals = vec![
             String::from("hello"),
@@ -38,6 +40,20 @@ fn main() {
             String::from("the"),
             String::from("other"),
             String::from("side"),
+        ];
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("I'm"),
+            String::from("a monkey"),
+            String::from("that"),
+            String::from("likes"),
+            String::from("bananas"),
         ];
         for val in vals {
             tx.send(val).unwrap();
