@@ -1,4 +1,5 @@
 use std::sync::mpsc;
+use std::sync::Mutex;
 use std::thread;
 use std::time::Duration;
 
@@ -30,38 +31,48 @@ fn main() {
 
     // handle.join().unwrap();
 
-    let (tx, rx) = mpsc::channel(); // mpsc - Multi producer, Single Consumer
+    // let (tx, rx) = mpsc::channel(); // mpsc - Multi producer, Single Consumer
 
-    let tx1 = mpsc::Sender::clone(&tx);
-    thread::spawn(move || {
-        let vals = vec![
-            String::from("hello"),
-            String::from("from"),
-            String::from("the"),
-            String::from("other"),
-            String::from("side"),
-        ];
-        for val in vals {
-            tx1.send(val).unwrap();
-            thread::sleep(Duration::from_secs(1));
-        }
-    });
+    // let tx1 = mpsc::Sender::clone(&tx);
+    // thread::spawn(move || {
+    //     let vals = vec![
+    //         String::from("hello"),
+    //         String::from("from"),
+    //         String::from("the"),
+    //         String::from("other"),
+    //         String::from("side"),
+    //     ];
+    //     for val in vals {
+    //         tx1.send(val).unwrap();
+    //         thread::sleep(Duration::from_secs(1));
+    //     }
+    // });
 
-    thread::spawn(move || {
-        let vals = vec![
-            String::from("I'm"),
-            String::from("a monkey"),
-            String::from("that"),
-            String::from("likes"),
-            String::from("bananas"),
-        ];
-        for val in vals {
-            tx.send(val).unwrap();
-            thread::sleep(Duration::from_secs(1));
-        }
-    });
+    // thread::spawn(move || {
+    //     let vals = vec![
+    //         String::from("I'm"),
+    //         String::from("a monkey"),
+    //         String::from("that"),
+    //         String::from("likes"),
+    //         String::from("bananas"),
+    //     ];
+    //     for val in vals {
+    //         tx.send(val).unwrap();
+    //         thread::sleep(Duration::from_secs(1));
+    //     }
+    // });
 
-    for received in rx {
-        println!("Got: {}", received);
-    }
+    // for received in rx {
+    //     println!("Got: {}", received);
+    // }
+
+    let m = Mutex::new(5); // Mutex<T> is a smart pointer
+
+    {
+        let mut num = m.lock().unwrap(); // acquire lock and block current thread
+        *num = 6;
+    } // <- lock is released here automatically since the inner
+      // MutexGuard has gone out of scope
+
+    println!("m = {:?}", m);
 }
