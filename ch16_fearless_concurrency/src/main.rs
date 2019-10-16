@@ -1,3 +1,4 @@
+use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
 
@@ -20,11 +21,31 @@ fn main() {
 
     // handle.join().unwrap();
 
-    let v = vec![1, 2, 3];
+    // Demonstrate move semantics for closure
+    // let v = vec![1, 2, 3];
 
-    let handle = thread::spawn(move || {
-        println!("Here's a vector = {:?}", v);
+    // let handle = thread::spawn(move || {
+    //     println!("Here's a vector = {:?}", v);
+    // });
+
+    // handle.join().unwrap();
+
+    let (tx, rx) = mpsc::channel(); // mpsc - Multi producer, Single Consumer
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hello"),
+            String::from("from"),
+            String::from("the"),
+            String::from("other"),
+            String::from("side"),
+        ];
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
     });
 
-    handle.join().unwrap();
+    for received in rx {
+        println!("Got: {}", received);
+    }
 }
