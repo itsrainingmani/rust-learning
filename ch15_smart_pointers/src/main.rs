@@ -19,6 +19,21 @@ enum RefList {
     Nil,
 }
 
+#[derive(Debug)]
+enum RefCycleList {
+    Cons(i32, RefCell<Rc<RefCycleList>>), // This gives the ability to modify which List a Cons is pointing to
+    Nil,
+}
+
+impl RefCycleList {
+    fn tail(&self) -> Option<&RefCell<Rc<RefCycleList>>> {
+        match self {
+            RefCycleList::Cons(_, item) => Some(item),
+            RefCycleList::Nil => None,
+        }
+    }
+}
+
 struct MyBox<T>(T);
 
 impl<T> MyBox<T> {
@@ -48,6 +63,7 @@ impl Drop for CustomSmartPointer {
 
 use crate::List::{Cons, Nil};
 use crate::RcList::{Cons as RcCons, Nil as RcNil};
+use crate::RefCycleList::{Cons as CycleCons, Nil as CycleNil};
 use crate::RefList::{Cons as RefCons, Nil as RefNil};
 
 fn main() {
@@ -126,7 +142,6 @@ fn main() {
     // you immutable access to that data.
     // Having an Rc<T> that holds a RefCell<T>, you can get a value that has
     // multiple owners and mutate the value
-
     let value = Rc::new(RefCell::new(5));
 
     let a = Rc::new(RefCons(Rc::clone(&value), Rc::new(RefNil)));
@@ -139,6 +154,28 @@ fn main() {
     println!("a after = {:?}", a);
     println!("b after = {:?}", b);
     println!("c after = {:?}", c);
+
+    // Creating a Reference Cycle
+    let a = Rc::new(CycleCons(5, RefCell::new(Rc::new(CycleNil))));
+
+    println!("a initial rc count = {}", Rc::strong_count(&a));
+    println!("a next item = {:?}", a.tail());
+
+    let b = Rc::new(CycleCons(10, RefCell::new(Rc::clone(&a))));
+    println!("a rc count after b creation = {}", Rc::strong_count(&a));
+    println!("b initial rc count = {}", Rc::strong_count(&b));
+    println!("b next item = {:?}", b.tail());
+
+    if let Some(link) = a.tail() {
+        *link.borrow_mut() = Rc::clone(&b);
+    }
+
+    println!("b rc count after changing a = {}", Rc::strong_count(&b));
+    println!("a rc count after changing a = {}", Rc::strong_count(&a));
+
+    // Uncomment the next line to see that we have a cycle;
+    // it will overflow the stack
+    // println!("a next item = {:?}", a.tail());
 }
 
 fn hello(name: &str) {
