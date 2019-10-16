@@ -1,6 +1,7 @@
+#![allow(dead_code)]
 use std::cell::RefCell;
 use std::ops::Deref;
-use std::rc::Rc;
+use std::rc::{Rc, Weak};
 
 enum List {
     Cons(i32, Box<List>),
@@ -59,6 +60,13 @@ impl Drop for CustomSmartPointer {
     fn drop(&mut self) {
         println!("Dropping CustomSmartPointer with data `{}`", self.data);
     }
+}
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    children: RefCell<Vec<Rc<Node>>>,
+    parent: RefCell<Weak<Node>>,
 }
 
 use crate::List::{Cons, Nil};
@@ -176,6 +184,81 @@ fn main() {
     // Uncomment the next line to see that we have a cycle;
     // it will overflow the stack
     // println!("a next item = {:?}", a.tail());
+
+    // So far, we've demonstrated that calling Rc::clone increases the
+    // strong_count of an Rc<T> instance and an Rc<T> instance is only
+    // cleaned up if it's strong_count is 0
+
+    // Preventing Ref Cycles by turning an Rc<T> to a Weak<T>
+    // Strong references are how you can share ownership of an Rc<T> instance
+    // Weak refs do not express an ownership relationship
+    // let leaf = Rc::new(Node {
+    //     value: 3,
+    //     children: RefCell::new(vec![]),
+    //     parent: RefCell::new(Weak::new()),
+    // });
+
+    // println!("leaf parent = {:?}", leaf.parent.borrow().upgrade()); // leaf parent = None
+
+    // let branch = Rc::new(Node {
+    //     value: 5,
+    //     children: RefCell::new(vec![Rc::clone(&leaf)]),
+    //     parent: RefCell::new(Weak::new()),
+    // });
+
+    // *leaf.parent.borrow_mut() = Rc::downgrade(&branch); // modify leaf to give it a weak ref to it's parent
+
+    // println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+
+    let leaf = Rc::new(Node {
+        value: 3,
+        children: RefCell::new(vec![]),
+        parent: RefCell::new(Weak::new()),
+    });
+
+    println!(
+        "Leaf strong = {}, weak = {}",
+        Rc::strong_count(&leaf),
+        Rc::weak_count(&leaf)
+    );
+
+    {
+        let branch = Rc::new(Node {
+            value: 5,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![Rc::clone(&leaf)]),
+        });
+
+        *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+
+        println!(
+            "Branch strong = {}, weak = {}",
+            Rc::strong_count(&branch),
+            Rc::weak_count(&branch)
+        );
+
+        println!(
+            "Leaf strong = {}, weak = {}",
+            Rc::strong_count(&leaf),
+            Rc::weak_count(&leaf)
+        );
+    }
+
+    println!("Leaf parent = {:?}", leaf.parent.borrow().upgrade());
+
+    println!(
+        "Leaf strong = {}, weak = {}",
+        Rc::strong_count(&leaf),
+        Rc::weak_count(&leaf)
+    );
+
+    // Summary
+    // * Box<T> has a known size and points to data allocated on the heap
+    // * Rc<T> keeps track of the number of references to data on the Heap
+    // so that data can have multiple owners
+    // * RefCell<T> with its interior mutability gives us a type that we
+    // can use when we need an immutable value but need to change an
+    // inner value of that type. Also enforces borrowing rules at runtime
 }
 
 fn hello(name: &str) {
