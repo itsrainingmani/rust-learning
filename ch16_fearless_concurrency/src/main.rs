@@ -1,8 +1,8 @@
-use std::rc::Rc;
-use std::sync::mpsc;
+// use std::rc::Rc;
+// use std::sync::mpsc;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Duration;
+// use std::time::Duration;
 
 fn main() {
     println!("Chapter 16 - Fearless Concurrency");
@@ -95,4 +95,8 @@ fn main() {
     }
 
     println!("Result: {}", *counter.lock().unwrap());
+
+    // let data = Arc::new(Mutex::new(0));
+    // let d1 = data.lock();
+    // let d2 = data.try_lock();
 }
