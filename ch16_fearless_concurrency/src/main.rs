@@ -1,5 +1,6 @@
+use std::rc::Rc;
 use std::sync::mpsc;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
@@ -66,13 +67,32 @@ fn main() {
     //     println!("Got: {}", received);
     // }
 
-    let m = Mutex::new(5); // Mutex<T> is a smart pointer
+    // let m = Mutex::new(5); // Mutex<T> is a smart pointer
 
-    {
-        let mut num = m.lock().unwrap(); // acquire lock and block current thread
-        *num = 6;
-    } // <- lock is released here automatically since the inner
-      // MutexGuard has gone out of scope
+    // {
+    //     let mut num = m.lock().unwrap(); // acquire lock and block current thread
+    //     *num = 6;
+    // } // <- lock is released here automatically since the inner
+    //   // MutexGuard has gone out of scope
 
-    println!("m = {:?}", m);
+    // println!("m = {:?}", m);
+
+    let counter = Arc::new(Mutex::new(0)); // Atomically reference counted
+                                           // Safe to be shared across threads
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
 }
