@@ -1,20 +1,20 @@
 // use std::rc::Rc;
-// use std::sync::mpsc;
+use std::sync::mpsc;
 use std::sync::{Arc, Mutex};
 use std::thread;
-// use std::time::Duration;
+use std::time::Duration;
 
 fn main() {
     println!("Chapter 16 - Fearless Concurrency");
-    // let handle = thread::spawn(|| {
-    //     for i in 1..10 {
-    //         println!("Hi number {} from spawned thread", i);
-    //         thread::sleep(Duration::from_millis(1));
-    //     }
-    // });
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("Hi number {} from spawned thread", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
 
-    // handle.join().unwrap(); // Putting the join call here blocks the main thread until
-    // the spawned thread finishes
+    handle.join().unwrap(); // Putting the join call here blocks the main thread until
+                            // the spawned thread finishes
 
     // for i in 1..5 {
     //     println!("Hi number {} from main thread", i);
@@ -24,48 +24,48 @@ fn main() {
     // handle.join().unwrap();
 
     // Demonstrate move semantics for closure
-    // let v = vec![1, 2, 3];
+    let v = vec![1, 2, 3];
 
-    // let handle = thread::spawn(move || {
-    //     println!("Here's a vector = {:?}", v);
-    // });
+    let handle = thread::spawn(move || {
+        println!("Here's a vector = {:?}", v);
+    });
 
-    // handle.join().unwrap();
+    handle.join().unwrap();
 
-    // let (tx, rx) = mpsc::channel(); // mpsc - Multi producer, Single Consumer
+    let (tx, rx) = mpsc::channel(); // mpsc - Multi producer, Single Consumer
 
-    // let tx1 = mpsc::Sender::clone(&tx);
-    // thread::spawn(move || {
-    //     let vals = vec![
-    //         String::from("hello"),
-    //         String::from("from"),
-    //         String::from("the"),
-    //         String::from("other"),
-    //         String::from("side"),
-    //     ];
-    //     for val in vals {
-    //         tx1.send(val).unwrap();
-    //         thread::sleep(Duration::from_secs(1));
-    //     }
-    // });
+    let tx1 = mpsc::Sender::clone(&tx);
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hello"),
+            String::from("from"),
+            String::from("the"),
+            String::from("other"),
+            String::from("side"),
+        ];
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
 
-    // thread::spawn(move || {
-    //     let vals = vec![
-    //         String::from("I'm"),
-    //         String::from("a monkey"),
-    //         String::from("that"),
-    //         String::from("likes"),
-    //         String::from("bananas"),
-    //     ];
-    //     for val in vals {
-    //         tx.send(val).unwrap();
-    //         thread::sleep(Duration::from_secs(1));
-    //     }
-    // });
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("I'm"),
+            String::from("a monkey"),
+            String::from("that"),
+            String::from("likes"),
+            String::from("bananas"),
+        ];
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
 
-    // for received in rx {
-    //     println!("Got: {}", received);
-    // }
+    for received in rx {
+        println!("Got: {}", received);
+    }
 
     // let m = Mutex::new(5); // Mutex<T> is a smart pointer
 
