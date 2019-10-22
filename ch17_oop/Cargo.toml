@@ -1,5 +1,6 @@
 [workspace]
 
 members = [
-    "ch17"
+    "ch17",
+    "gui"
 ]
