@@ -21,7 +21,7 @@ impl AveragedCollection {
     }
 
     pub fn average(&self) -> f64 {
-        self.average()
+        self.average
     }
 
     fn update_average(&mut self) {
