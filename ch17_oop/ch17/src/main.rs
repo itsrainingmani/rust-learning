@@ -1,3 +1,4 @@
+use blog::Post;
 use gui::{Button, Draw, Screen};
 
 fn main() {
@@ -23,6 +24,17 @@ fn main() {
     };
 
     screen.run();
+
+    let mut post = Post::new();
+
+    post.add_text("I ate Chen's for lunch today");
+    assert_eq!("", post.content());
+
+    post.request_review();
+    assert_eq!("", post.content());
+
+    post.approve();
+    assert_eq!("I ate Chen's for lunch today", post.content());
 }
 
 #[derive(Debug)]

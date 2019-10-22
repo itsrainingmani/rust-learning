@@ -2,5 +2,6 @@
 
 members = [
     "ch17",
-    "gui"
+    "gui",
+    "blog"
 ]
