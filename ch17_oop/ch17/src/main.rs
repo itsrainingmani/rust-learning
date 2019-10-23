@@ -25,16 +25,29 @@ fn main() {
 
     screen.run();
 
+    // let mut post = Post::new();
+
+    // post.add_text("I ate Chen's for lunch today");
+    // assert_eq!("", post.content());
+
+    // post.request_review();
+    // assert_eq!("", post.content());
+
+    // post.approve();
+    // assert_eq!("I ate Chen's for lunch today", post.content());
+
     let mut post = Post::new();
 
-    post.add_text("I ate Chen's for lunch today");
-    assert_eq!("", post.content());
+    post.add_text("I ate some delicious Chen's for lunch today");
 
-    post.request_review();
-    assert_eq!("", post.content());
+    let post = post.request_review();
 
-    post.approve();
-    assert_eq!("I ate Chen's for lunch today", post.content());
+    let post = post.approve();
+
+    assert_eq!(
+        "I ate some delicious Chen's for lunch today",
+        post.content()
+    );
 }
 
 #[derive(Debug)]
