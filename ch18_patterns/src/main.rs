@@ -42,4 +42,27 @@ fn main() {
 
     let point = (3, 5);
     print_coordinates(&point);
+
+    // let Some(x) = favorite_color;
+    // Patterns come in two forms - refutable and irrefutable.
+    // Patterns that will match for any possible value passed are irrefutable
+
+    // Matching Literals
+    let x = 1;
+    match x {
+        1 => println!("one"),
+        2 => println!("two"),
+        3 => println!("three"),
+        _ => println!("anything"),
+    }
+
+    let x = Some(5);
+    let y = 10;
+    match x {
+        Some(50) => println!("Got 50"),
+        Some(y) => println!("Matched, y = {:?}", y),
+        _ => println!("Default case, x = {:?}", x),
+    }
+
+    println!("At the end: x = {:?}, y = {:?}", x, y);
 }
