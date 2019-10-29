@@ -59,10 +59,100 @@ fn main() {
     let x = Some(5);
     let y = 10;
     match x {
+        // Starts a new scope
         Some(50) => println!("Got 50"),
-        Some(y) => println!("Matched, y = {:?}", y),
+        Some(y) => println!("Matched, y = {:?}", y), // the y here shadows the y outside the match scope
         _ => println!("Default case, x = {:?}", x),
     }
 
     println!("At the end: x = {:?}, y = {:?}", x, y);
+
+    // Multiple Patterns
+    let x = 1;
+
+    match x {
+        1 | 2 => println!("one or two"), // matches against either one or two
+        3 => println!("three"),
+        _ => println!("anything"),
+    }
+
+    // Matching ranges of values with ...
+    let x = 5;
+
+    match x {
+        1..=5 => println!("one through five"), // ... range patterns are deprecated
+        _ => println!("anything else"),
+    }
+
+    let c = 'c';
+
+    match c {
+        'a'..='j' => println!("Early ascii letter"),
+        'k'..='z' => println!("Late ascii letter"),
+        _ => println!("Something else"),
+    }
+
+    // Destructuring Structs
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x: a, y: b } = p;
+
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+
+    match p {
+        Point { x, y: 0 } => println!("On the x axis at {}", x),
+        Point { x: 0, y } => println!("On the y axis at {}", y),
+        Point { x, y } => println!("On neither axis: ({}, {})", x, y),
+    }
+
+    // let msg = Message::ChangeColor(0, 160, 255);
+
+    // match msg {
+    //     Message::Quit => println!("The Quit variant has no data to destructure"),
+    //     Message::Move { x, y } => println!("Move in the x direction {} and y direction {}", x, y),
+    //     Message::Write(txt) => println!("Text message: {}", txt),
+    //     Message::ChangeColor(r, g, b) => {
+    //         println!("Change color to red {}, green {}, blue {}", r, g, b)
+    //     }
+    // }
+
+    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+    match msg {
+        Message::ChangeColor(Color::Rgb(r, g, b)) => {
+            println!("Change the color to red {}, green {}, blue {}", r, g, b)
+        }
+        Message::ChangeColor(Color::Hsv(h, s, v)) => println!(
+            "Change the color to hue {}, saturation {}, value {}",
+            h, s, v
+        ),
+        _ => (),
+    }
+
+    // Destructuring Structs and Tuples
+    let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
+
+    foo(3, 4);
+}
+
+fn foo(_: i32, y: i32) {
+    println!("This code only uses the y param: {}", y);
+}
+
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
 }
