@@ -134,6 +134,46 @@ fn main() {
     let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
 
     foo(3, 4);
+
+    // Ignoring parts of a value with a nested _
+    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) => println!("can't overwrite an existing customized value"),
+        _ => {
+            setting_value = new_setting_value;
+        }
+    }
+
+    println!("setting is {:?}", setting_value);
+
+    let numbers = (2, 4, 8, 16, 32);
+    match numbers {
+        (first, _, third, _, fifth) => println!("Some nums: {}, {}, {}", first, third, fifth),
+    }
+
+    let _x = 5;
+    // let y = 10;
+
+    // Ignoring remaining parts of a value with ..
+
+    struct Point3D {
+        x: i32,
+        y: i32,
+        z: i32,
+    }
+
+    let origin = Point3D { x: 0, y: 0, z: 0 };
+
+    match origin {
+        Point3D { x, .. } => println!("x is {}", x), // the .. pattern ignores any parts of a value that we haven't explicitly matched
+                                                     // this is quicker than saying y: _, z: _
+    }
+
+    match numbers {
+        (first, .., fourth, fifth) => println!("Some nums: {}, {}, {}", first, fourth, fifth),
+    }
 }
 
 fn foo(_: i32, y: i32) {
