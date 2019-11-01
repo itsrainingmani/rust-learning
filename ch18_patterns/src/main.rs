@@ -174,6 +174,46 @@ fn main() {
     match numbers {
         (first, .., fourth, fifth) => println!("Some nums: {}, {}, {}", first, fourth, fifth),
     }
+
+    // Extra conditionals with match guards
+    let num = Some(4);
+
+    match num {
+        Some(x) if x < 5 => println!("less than five: {}", x),
+        Some(x) => println!("{}", x),
+        None => (),
+    }
+
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) => println!("got 50"),
+        Some(n) if n == y => println!("Matched, n = {:?}", n),
+        _ => println!("Default case, x = {:?}", x),
+    }
+
+    println!("At the end: x = {:?}, y = {:?}", x, y);
+
+    // @ Bindings
+    // The at operator (@) lets us create a variable that holds a value at the same time
+    // we're testing that value to see whether it matches a pattern
+    enum SimpleMessage {
+        Hello { id: i32 },
+    }
+
+    let msg = SimpleMessage::Hello { id: 5 };
+
+    match msg {
+        // SimpleMessage::Hello {
+        //     id: id_variable @ 3..=7,
+        // } => println!("Found an id in range: {}", id_variable),
+        SimpleMessage::Hello { id: id_variable } if id_variable > 3 && id_variable <= 7 => {
+            println!("Found an id in range: {}", id_variable)
+        }
+        SimpleMessage::Hello { id: 10..=12 } => println!("Found an id in another range"),
+        SimpleMessage::Hello { id } => println!("Found some other id: {}", id),
+    }
 }
 
 fn foo(_: i32, y: i32) {
