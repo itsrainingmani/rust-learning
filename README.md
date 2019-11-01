@@ -18,3 +18,5 @@ Learning Rust from [The Rust Programming Language](https://doc.rust-lang.org/boo
 - [x] Ch14. More about Cargo and Crates.io
 - [x] Ch15. Smart Pointers
 - [x] Ch16. Fearless Concurrency
+- [x] Ch17. Object Oriented Programming Features of Rust
+- [x] Ch18. Patterns and Matching
