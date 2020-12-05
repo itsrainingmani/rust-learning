@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-use std::thread;
 use std::time::Duration;
 
 struct Cacher<T, K, V>

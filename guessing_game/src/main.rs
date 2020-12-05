@@ -35,6 +35,7 @@ fn main() {
         };
 
         println!("You guessed: {}", guess);
+        println!("Hello this is Rust {}", guess);
 
         match guess.cmp(&secret_number) {
             Ordering::Less => println!("Too small!"),
